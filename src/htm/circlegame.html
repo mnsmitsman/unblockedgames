@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klik op de Cirkel | Unblocked Games</title>
+  <link href="https://fonts.googleapis.com/css2?family=Boogaloo&display=swap" rel="stylesheet">
+  <link href="../img/logo.svg" rel="icon">
+  <style>
+    body {
+        font-family: "Boogaloo", sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background-color: orange;
+    }
+    #circle {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: red;
+      cursor: pointer;
+    }
+
+    #backButton {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<a href="../../Home.html">
+    <img id="backButton" src="https://9f5cc2304d.cbaul-cdnwnd.com/4d5c4d9eae783bc0b8b434f7723a27f9/200000006-6e4256e426/450/icons8-back-100.webp?ph=9f5cc2304d%20100w,%20https://9f5cc2304d.cbaul-cdnwnd.com/4d5c4d9eae783bc0b8b434f7723a27f9/200000006-6e4256e426/700/icons8-back-100.webp?ph=9f5cc2304d%20100w,%20https://9f5cc2304d.cbaul-cdnwnd.com/4d5c4d9eae783bc0b8b434f7723a27f9/200000006-6e4256e426/icons8-back-100.webp?ph=9f5cc2304d%20100w" alt="Back Button" width="50">
+    </a>
+  <h1>Klik op de Cirkel!</h1>
+  <p id="score">Score: 0</p>
+  <div id="circle" onclick="increaseScore()"></div>
+
+  <script>
+    let score = 0;
+
+    function moveCircle() {
+      const circle = document.getElementById('circle');
+      const x = Math.random() * (window.innerWidth - 50);
+      const y = Math.random() * (window.innerHeight - 50);
+      circle.style.left = x + 'px';
+      circle.style.top = y + 'px';
+    }
+
+    function increaseScore() {
+      score++;
+      document.getElementById('score').innerText = "Score: " + score;
+      moveCircle();
+    }
+
+    setInterval(moveCircle, 1500);
+  </script>
+</body>
+</html>

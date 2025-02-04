@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flappy Bird</title>
+  <link href="https://fonts.googleapis.com/css2?family=Boogaloo&display=swap" rel="stylesheet">
+  <link href="../img/logo.svg" rel="icon">
+  <style>
+    body {
+      font-family: "Boogaloo", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: orange;
+    }
+
+    #backButton {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 50px;
+    }
+
+    h1 {
+      margin: 20px 0;
+    }
+
+    #gameWrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      display: none;
+      border: 2px solid black;
+    }
+
+    #startButton {
+      font-size: 20px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #ffcc00;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <a href="../../Home.html">
+    <img id="backButton" src="https://9f5cc2304d.cbaul-cdnwnd.com/4d5c4d9eae783bc0b8b434f7723a27f9/200000006-6e4256e426/icons8-back-100.webp" alt="Back Button">
+  </a>
+  <h1>Flappy Bird</h1>
+  <button id="startButton">START</button>
+  <div id="gameWrapper">
+    <canvas id="gameCanvas"></canvas>
+  </div>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const startButton = document.getElementById('startButton');
+
+    canvas.width = 400;
+    canvas.height = 600;
+
+    const bird = {
+      x: 50,
+      y: canvas.height / 2,
+      width: 20,
+      height: 20,
+      gravity: 0.6,
+      lift: -12,
+      velocity: 0,
+    };
+
+    const pipes = [];
+    const pipeWidth = 50;
+    const gapHeight = 120;
+    const pipeSpeed = 2;
+
+    let score = 0;
+    let gameRunning = false;
+
+    function createPipe() {
+      const topHeight = Math.random() * (canvas.height / 2);
+      const bottomHeight = canvas.height - topHeight - gapHeight;
+
+      pipes.push({ x: canvas.width, top: topHeight, bottom: bottomHeight });
+    }
+
+    function drawBird() {
+      ctx.fillStyle = "yellow";
+      ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
+    }
+
+    function drawPipes() {
+      ctx.fillStyle = "green";
+      pipes.forEach(pipe => {
+        ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
+        ctx.fillRect(pipe.x, canvas.height - pipe.bottom, pipeWidth, pipe.bottom);
+      });
+    }
+
+    function updateBird() {
+      bird.velocity += bird.gravity;
+      bird.y += bird.velocity;
+
+      if (bird.y + bird.height > canvas.height || bird.y < 0) {
+        gameRunning = false;
+      }
+    }
+
+    function updatePipes() {
+      pipes.forEach(pipe => {
+        pipe.x -= pipeSpeed;
+        if (
+          bird.x < pipe.x + pipeWidth &&
+          bird.x + bird.width > pipe.x &&
+          (bird.y < pipe.top || bird.y + bird.height > canvas.height - pipe.bottom)
+        ) {
+          gameRunning = false;
+        }
+        if (pipe.x + pipeWidth < bird.x && !pipe.scored) {
+          score++;
+          pipe.scored = true;
+        }
+      });
+
+      if (pipes.length > 0 && pipes[0].x + pipeWidth < 0) {
+        pipes.shift();
+      }
+    }
+
+    function drawScore() {
+      ctx.fillStyle = "white";
+      ctx.font = "30px Arial";
+      ctx.fillText(`Score: ${score}`, 10, 40);
+    }
+
+    function gameLoop() {
+      if (!gameRunning) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawBird();
+      drawPipes();
+      drawScore();
+      updateBird();
+      updatePipes();
+
+      if (gameRunning) requestAnimationFrame(gameLoop);
+      else {
+        ctx.fillStyle = "red";
+        ctx.font = "40px Arial";
+        ctx.fillText("Game Over", canvas.width / 2 - 100, canvas.height / 2);
+        ctx.font = "20px Arial";
+        ctx.fillText(`Score: ${score}`, canvas.width / 2 - 50, canvas.height / 2 + 30);
+      }
+    }
+
+    window.addEventListener("keydown", () => {
+      if (gameRunning) bird.velocity = bird.lift;
+    });
+
+    startButton.addEventListener("click", () => {
+      startButton.style.display = "none";
+      canvas.style.display = "block";
+      pipes.length = 0;
+      bird.y = canvas.height / 2;
+      bird.velocity = 0;
+      score = 0;
+      gameRunning = true;
+      setInterval(createPipe, 2000);
+      gameLoop();
+    });
+  </script>
+</body>
+</html>

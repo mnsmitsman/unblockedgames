@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Race Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Boogaloo&display=swap" rel="stylesheet">
+  <link href="../img/logo.svg" rel="icon">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: "Boogaloo", sans-serif;
+      background-color: orange;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #backButton {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <a href="../../Home.html">
+    <img id="backButton" src="https://9f5cc2304d.cbaul-cdnwnd.com/4d5c4d9eae783bc0b8b434f7723a27f9/200000006-6e4256e426/450/icons8-back-100.webp?ph=9f5cc2304d%20100w,%20https://9f5cc2304d.cbaul-cdnwnd.com/4d5c4d9eae783bc0b8b434f7723a27f9/200000006-6e4256e426/700/icons8-back-100.webp?ph=9f5cc2304d%20100w,%20https://9f5cc2304d.cbaul-cdnwnd.com/4d5c4d9eae783bc0b8b434f7723a27f9/200000006-6e4256e426/icons8-back-100.webp?ph=9f5cc2304d%20100w" alt="Back Button" width="50">
+  </a>
+<div align="center">
+    <h1>Race Game</h1>
+  <canvas id="gameCanvas"></canvas>
+</div>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = 400;
+    canvas.height = 600;
+
+    const roadWidth = 200;
+    const carWidth = 30;
+    const carHeight = 50;
+
+    let carX = canvas.width / 2 - carWidth / 2;
+    const carY = canvas.height - carHeight - 20;
+
+    const speed = 5;
+    const obstacleSpeed = 3;
+    const obstacles = [];
+
+    let gameRunning = true;
+
+    function createObstacle() {
+      const obstacleWidth = Math.random() * (roadWidth / 2) + 30;
+      const obstacleX = Math.random() * (roadWidth - obstacleWidth) + canvas.width / 2 - roadWidth / 2;
+
+      obstacles.push({
+        x: obstacleX,
+        y: -50,
+        width: obstacleWidth,
+        height: 20
+      });
+    }
+
+    function drawCar() {
+      ctx.fillStyle = 'red';
+      ctx.fillRect(carX, carY, carWidth, carHeight);
+    }
+
+    function drawObstacles() {
+      ctx.fillStyle = 'blue';
+      obstacles.forEach(obstacle => {
+        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+      });
+    }
+
+    function updateObstacles() {
+      obstacles.forEach(obstacle => {
+        obstacle.y += obstacleSpeed;
+      });
+
+      // Remove obstacles that go out of bounds
+      if (obstacles.length > 0 && obstacles[0].y > canvas.height) {
+        obstacles.shift();
+      }
+    }
+
+    function checkCollision() {
+      for (let i = 0; i < obstacles.length; i++) {
+        const obstacle = obstacles[i];
+
+        if (
+          carX < obstacle.x + obstacle.width &&
+          carX + carWidth > obstacle.x &&
+          carY < obstacle.y + obstacle.height &&
+          carY + carHeight > obstacle.y
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function drawRoad() {
+      ctx.fillStyle = 'gray';
+      ctx.fillRect(canvas.width / 2 - roadWidth / 2, 0, roadWidth, canvas.height);
+
+      ctx.fillStyle = 'white';
+      ctx.fillRect(canvas.width / 2 - 2, 0, 4, canvas.height);
+    }
+
+    let keys = {};
+
+    window.addEventListener('keydown', e => {
+      keys[e.key] = true;
+    });
+
+    window.addEventListener('keyup', e => {
+      keys[e.key] = false;
+    });
+
+    function updateCar() {
+      if (keys['ArrowLeft'] && carX > canvas.width / 2 - roadWidth / 2) {
+        carX -= speed;
+      }
+      if (keys['ArrowRight'] && carX < canvas.width / 2 + roadWidth / 2 - carWidth) {
+        carX += speed;
+      }
+    }
+
+    function gameLoop() {
+      if (!gameRunning) {
+        ctx.fillStyle = 'white';
+        ctx.font = '30px Arial';
+        ctx.fillText('Game Over', canvas.width / 2 - 70, canvas.height / 2);
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawRoad();
+      drawCar();
+      drawObstacles();
+      updateCar();
+      updateObstacles();
+
+      if (checkCollision()) {
+        gameRunning = false;
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    setInterval(createObstacle, 1500);
+    gameLoop();
+  </script>
+</body>
+</html>

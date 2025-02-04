@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake Game | Unblocked Games</title>
+  <link href="https://fonts.googleapis.com/css2?family=Boogaloo&display=swap" rel="stylesheet">
+  <link href="../img/logo.svg" rel="icon">
+  <style>
+    body {
+      font-family: "Boogaloo", sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: orange;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    canvas {
+      border: 1px solid #000;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #gameOver {
+      display: none;
+      font-size: 30px;
+      color: red;
+    }
+
+    .centered {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    #backButton {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <a href="../../Home.html">
+    <img id="backButton" src="https://9f5cc2304d.cbaul-cdnwnd.com/4d5c4d9eae783bc0b8b434f7723a27f9/200000006-6e4256e426/450/icons8-back-100.webp?ph=9f5cc2304d" alt="Back Button" width="50">
+  </a>
+  <h1>Snake Game</h1>
+  <canvas id="gameCanvas" width="300" height="300"></canvas>
+  <div id="gameOver">Game Over! Druk op de knop om opnieuw te starten.</div>
+  <div class="centered" class="body">
+    <button id="restartButton" style="display:none;">Opnieuw starten</button>
+  </div>
+  
+  <script src="js/snake.js"></script>
+</body>
+</html>
