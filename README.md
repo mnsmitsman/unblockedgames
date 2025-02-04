@@ -15,3 +15,5 @@ The 4 games in this website:
 
 
 Have a nice day!
+
+© All rights reserved | Maarten Smitsman  | 2025
